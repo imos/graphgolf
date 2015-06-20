@@ -13,7 +13,8 @@ class Graph {
   inline Node order() { return order_; }
   inline Degree degree() { return degree_; }
 
-  // Returns the de
+  // Returns the order_index node's degree_index-th edge's node.  Returns -1 if
+  // there is no such an edge.
   Node GetEdge(Node order_index, Degree degree_index);
 
  private:
