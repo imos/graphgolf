@@ -79,10 +79,11 @@ void Graph::PrintScore(const Score& score) const {
 Score Graph::Evaluate() const {
   int64_t distance_sum = 0;
   int distance_max = 0;
+  vector<int> vertices(order());
+  vector<int> distances(order(), -1);
 
   for (int start_vertex = 0; start_vertex < order(); start_vertex++) {
-    vector<int> vertices(order());
-    vector<int> distances(order(), -1);
+    std::fill(distances.begin(), distances.end(), -1);
 
     // Set the start_vertex.
     vertices[0] = start_vertex;

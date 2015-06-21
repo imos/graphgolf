@@ -59,6 +59,17 @@ cc_test(
   ],
 )
 
+cc_binary(
+  name = "random_graph",
+  srcs = ["random_graph_main.cc"],
+  deps = [
+    ":graph",
+    ":io",
+    ":rand",
+    "//base",
+  ],
+)
+
 cc_library(
   name = "slice",
   hdrs = ["slice.h"],
