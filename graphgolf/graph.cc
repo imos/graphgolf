@@ -37,7 +37,6 @@ bool Graph::AddDirectionalEdge(Vertex v1, Vertex v2, bool check) {
     DCHECK(!check) << "Self-loop edge cannot be added: vertex = " << v1;
     return false;
   }
-  // Returns false 
   if (!check) {
     if (degrees_[v1] >= degree()) { return false; }
     if (HasDirectionalEdge(v1, v2)) { return false; }

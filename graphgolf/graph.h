@@ -13,28 +13,32 @@ class Graph {
         degrees_(order, 0) {}
   virtual ~Graph() {}
 
+  // Returns the order of the task.
   inline Vertex order() { return order_; }
+
+  // Returns the degree of the task.
   inline Degree degree() { return degree_; }
 
-  inline Degree GetVertexDegree(Vertex vertex_index) {
-    CheckVertex(vertex_index);
-    return degrees_[vertex_index];
-  }
-
-  // Returns the vertex_index vertex's degree_index-th edge's node.  Returns -1
-  // if there is no such an edge.
-  inline Vertex GetEdge(Vertex vertex_index, Degree degree_index) {
-    return edges_[GetEdgeIndex(vertex_index, degree_index)];
-  }
-
-  inline Slice<const Vertex*> Edges(Vertex v1) {
+  // Returns vertices connected from the vertex.
+  inline Slice<const Vertex*> Edges(Vertex vertex) {
     return Slice<const Vertex*>(
-        &edges_[GetEdgeIndex(v1, 0)],
-        &edges_[GetEdgeIndex(v1, 0) + GetVertexDegree(v1)]);
+        &edges_[GetEdgeIndex(vertex, 0)],
+        &edges_[GetEdgeIndex(vertex, 0) + GetVertexDegree(vertex)]);
   }
 
+  // Returns if there is an edge between v1 and v2.
   virtual bool HasEdge(Vertex v1, Vertex v2);
+
+  // Adds an edge between v1 and v2.  Dies if this function fails to add the
+  // edge and check is true.  Returns true iff succeeded.
+  //
+  // REQUIRES: v1 != v2, v1 and v2 are valid vertices.
   virtual bool AddEdge(Vertex v1, Vertex v2, bool check);
+
+  // Removes an edge between v1 and v2.  Dies if this function fails to remove
+  // the edge and check is true.  REturns true iff succeeded.
+  //
+  // REQUIRES: v1 != v2, v1 and v2 are valid vertices.
   virtual bool RemoveEdge(Vertex v1, Vertex v2, bool check);
 
  protected:
@@ -58,6 +62,10 @@ class Graph {
   }
 
  private:
+  inline Degree GetVertexDegree(Vertex vertex_index) {
+    return degrees_[CheckVertex(vertex_index)];
+  }
+
   bool HasDirectionalEdge(Vertex v1, Vertex v2);
   bool AddDirectionalEdge(Vertex v1, Vertex v2, bool check);
   bool RemoveDirectionalEdge(Vertex v1, Vertex v2, bool check);
