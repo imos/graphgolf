@@ -3,6 +3,7 @@ cc_library(
   srcs = ["graph.cc"],
   hdrs = ["graph.h"],
   deps = [
+    ":slice",
     "//base",
   ],
   linkstatic = 1,
@@ -33,4 +34,10 @@ cc_test(
     ":rand",
     "//base:test_main",
   ],
+)
+
+cc_library(
+  name = "slice",
+  hdrs = ["slice.h"],
+  srcs = ["slice.cc"],
 )
