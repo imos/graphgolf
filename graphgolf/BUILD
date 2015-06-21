@@ -1,3 +1,15 @@
+package(default_visibility = ["//visibility:public"])
+
+cc_binary(
+  name = "generate_base",
+  srcs = ["generate_base_main.cc"],
+  deps = [
+    ":graph",
+    ":io",
+    "//base",
+  ],
+)
+
 cc_library(
   name = "graph",
   srcs = ["graph.cc"],
@@ -16,6 +28,17 @@ cc_test(
     ":graph",
     "//base:test_main",
   ],
+)
+
+cc_library(
+  name = "io",
+  srcs = ["io.cc"],
+  hdrs = ["io.h"],
+  deps = [
+    ":graph",
+    "//base",
+  ],
+  linkstatic = 1,
 )
 
 cc_library(

@@ -2,7 +2,7 @@
 
 using std::swap;
 
-bool Graph::HasEdge(Vertex v1, Vertex v2) {
+bool Graph::HasEdge(Vertex v1, Vertex v2) const {
   return HasDirectionalEdge(v1, v2);
 }
 
@@ -20,7 +20,7 @@ bool Graph::RemoveEdge(Vertex v1, Vertex v2, bool check) {
   return false;
 }
 
-bool Graph::HasDirectionalEdge(Vertex v1, Vertex v2) {
+bool Graph::HasDirectionalEdge(Vertex v1, Vertex v2) const {
   CheckVertex(v1);
   CheckVertex(v2);
   if (v1 == v2) { return false; }
@@ -67,4 +67,49 @@ bool Graph::RemoveDirectionalEdge(Vertex v1, Vertex v2, bool check) {
   }
   DCHECK(!check) << "No such an edge: " << v1 << " => " << v2;
   return false;
+}
+
+void Graph::PrintScore(const Score& score) const {
+  fprintf(stderr,
+          "Diameter: %d, ASPL: %.4lf\n",
+          score.first,
+          static_cast<double>(score.second) / order_ / (order_ - 1));
+}
+
+Score Graph::Evaluate() const {
+  int64_t distance_sum = 0;
+  int distance_max = 0;
+
+  for (int start_vertex = 0; start_vertex < order(); start_vertex++) {
+    vector<int> vertices(order());
+    vector<int> distances(order(), -1);
+
+    // Set the start_vertex.
+    vertices[0] = start_vertex;
+    distances[start_vertex] = 0;
+
+    int read_index = 0;
+    int write_index = 1;
+    for (; read_index < vertices.size(); read_index++) {
+      if (read_index >= write_index) {
+        return Score(order(), 0);
+      }
+
+      // The current vertex.
+      const int vertex = vertices[read_index];
+      // The distance from the start vertex for the vertices connected from
+      // the current vertex.
+      const int next_distance = distances[vertex] + 1;
+
+      for (Vertex next_vertex : Edges(vertex)) {
+        if (distances[next_vertex] != -1) continue;
+        distances[next_vertex] = next_distance;
+        distance_sum += next_distance;
+        vertices[write_index++] = next_vertex;
+      }
+    }
+
+    distance_max = max(distance_max, distances[write_index - 1]);
+  }
+  return Score(distance_max, distance_sum);
 }
