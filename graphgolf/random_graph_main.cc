@@ -34,6 +34,7 @@ int main(int argc, char** argv) {
     }
   }
 
+  graph->Init();
   graph->PrintScore(graph->Evaluate());
   SaveGraph(*graph);
 

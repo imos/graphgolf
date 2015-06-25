@@ -46,5 +46,20 @@ TEST(GraphTest, ManipulateEdges) {
     EXPECT_FALSE(g.RemoveEdge(0, 4, false));
     EXPECT_TRUE(g.RemoveEdge(0, 3, false));
     EXPECT_FALSE(g.RemoveEdge(0, 3, false));
+
+    g.Init();
+    EXPECT_EQ(Score(10, 0), g.Evaluate());
+  }
+
+  {
+    Graph g(3, 3);
+    g.Init();
+
+    EXPECT_TRUE(g.AddEdge(0, 1, false));
+    EXPECT_TRUE(g.AddEdge(0, 2, false));
+    EXPECT_EQ(Score(2, 8), g.Evaluate());
+
+    EXPECT_TRUE(g.AddEdge(1, 2, false));
+    EXPECT_EQ(Score(1, 6), g.Evaluate());
   }
 }

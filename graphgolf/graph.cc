@@ -82,6 +82,7 @@ Score Graph::Evaluate() const {
   vector<int> vertices(order());
   vector<int> distances(order(), -1);
 
+  CHECK(initialized_) << "Init must be called beforehand.";
   for (int start_vertex = 0; start_vertex < order(); start_vertex++) {
     std::fill(distances.begin(), distances.end(), -1);
 

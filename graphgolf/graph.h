@@ -6,15 +6,19 @@
 typedef int16_t Vertex;
 typedef int16_t Degree;
 typedef pair<int32_t, int64_t> Score;
+typedef pair<Vertex, Vertex> Route;
 
 class Graph {
  public:
   Graph(Vertex order, Degree degree)
-      : order_(order),
+      : initialized_(false),
+        order_(order),
         degree_(degree),
         edges_(static_cast<int32_t>(order) * degree, -1),
         degrees_(order, 0) {}
   virtual ~Graph() {}
+
+  virtual void Init() { initialized_ = true; }
 
   // Returns the order of the task.
   inline Vertex order() const { return order_; }
@@ -79,6 +83,7 @@ class Graph {
   bool AddDirectionalEdge(Vertex v1, Vertex v2, bool check);
   bool RemoveDirectionalEdge(Vertex v1, Vertex v2, bool check);
 
+  bool initialized_;
   const Vertex order_;
   const Degree degree_;
   vector<Vertex> edges_;

@@ -16,6 +16,7 @@ void Generate() {
     }
   }
 
+  g.Init();
   SaveGraph(g);
   g.PrintScore(g.Evaluate());
 }
