@@ -1,7 +1,12 @@
 #include <set>
 
 #include "base/base.h"
+#include "graphgolf/fast_evaluation_graph.h"
+#include "graphgolf/graph.h"
 #include "graphgolf/io.h"
+
+DEFINE_bool(use_fast_evaluation_graph, false,
+            "Use FastEvaluationGraph instead.");
 
 std::unique_ptr<Graph> LoadGraph() {
   map<Vertex, set<Vertex>> edge_groups;
@@ -31,7 +36,11 @@ std::unique_ptr<Graph> LoadGraph() {
 
   std::unique_ptr<Graph> graph;
   LOG(INFO) << "Graph(order = " << order << ", degree = " << degree << ")";
-  graph.reset(new Graph(order, degree));
+  if (FLAGS_use_fast_evaluation_graph) {
+    graph.reset(new FastEvaluationGraph(order, degree));
+  } else {
+    graph.reset(new Graph(order, degree));
+  }
 
   for (const auto& vertex_and_edge_group : edge_groups) {
     Vertex v1 = vertex_and_edge_group.first;

@@ -1,5 +1,16 @@
 package(default_visibility = ["//visibility:public"])
 
+cc_library(
+  name = "fast_evaluation_graph",
+  srcs = ["fast_evaluation_graph.cc"],
+  hdrs = ["fast_evaluation_graph.h"],
+  deps = [
+    ":graph",
+    "//base",
+  ],
+  linkstatic = 1,
+)
+
 cc_binary(
   name = "generate_base",
   srcs = ["generate_base_main.cc"],
@@ -35,6 +46,7 @@ cc_library(
   srcs = ["io.cc"],
   hdrs = ["io.h"],
   deps = [
+    ":fast_evaluation_graph",
     ":graph",
     "//base",
   ],
