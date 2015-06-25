@@ -110,7 +110,7 @@ Score Graph::Evaluate() const {
       }
     }
 
-    distance_max = max(distance_max, distances[write_index - 1]);
+    distance_max = max(distance_max, distances[vertices[write_index - 1]]);
   }
   return Score(distance_max, distance_sum);
 }

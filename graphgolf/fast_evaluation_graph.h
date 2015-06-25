@@ -24,7 +24,8 @@ class FastEvaluationGraph : public Graph {
 
   bool RemoveEdge(Vertex v1, Vertex v2, bool check) override;
 
-  Score EvaluateAll() const {
+  //*
+  Score Evaluate() const override {
     int64_t distance_sum = 0;
     int distance_max = 0;
     vector<int> vertices(order());
@@ -62,24 +63,49 @@ class FastEvaluationGraph : public Graph {
       for (Vertex end_vertex = 0; end_vertex < order(); end_vertex++) {
         if (start_vertex == end_vertex) continue;
         int distance = distances[end_vertex];
+        if (distance == -1) distance = 0;
         auto route = routes_.find(RegularizedRoute(Route(start_vertex, end_vertex)));
-        int new_distance = -1;
+        int new_distance = 0;
         if (route != routes_.end() && route->second.size() > 0) {
           new_distance = route->second.size();
         }
+        LOG(INFO) << start_vertex << " => " << end_vertex << ": " << distance;
         CHECK_EQ(distance, new_distance)
             << start_vertex << " => " << end_vertex;
+        CHECK_EQ(1, distance_and_routes_.find(new_distance)->second.count(RegularizedRoute(Route(start_vertex, end_vertex))));
       }
 
-      distance_max = max(distance_max, distances[write_index - 1]);
+      distance_max = max(distance_max, distances[vertices[write_index - 1]]);
+    }
+    if (distance_and_routes_.count(0) == 0) {
+      if (distance_max != distance_and_routes_.rbegin()->first) {
+        for (Route route : distance_and_routes_.rbegin()->second) {
+          LOG(INFO) << "route: " << route.first << " => " << route.second;
+        }
+      }
+      CHECK_EQ(distance_max, distance_and_routes_.rbegin()->first);
     }
     return Score(distance_max, distance_sum);
   }
+  /*/
 
   Score Evaluate() const override {
     if (distance_and_routes_.count(0) > 0) {
       return Score(order(), 0);
     }
+
+    int64_t distance_sum = 0;
+    for (auto distance_and_routes : distance_and_routes_) {
+      int distance = distance_and_routes.first;
+      distance_sum += distance * distance_and_routes.second.size();
+      for (Route route : distance_and_routes.second) {
+        int route_distance = RouteSize(route);
+        if (route_distance == -1) route_distance = 0;
+        CHECK_EQ(distance, route_distance)
+            << "Route: " << route.first << " => " << route.second;
+      }
+    }
+    CHECK_EQ(distance_sum, distance_sum_);
 
     Score evaluated_score = Graph::Evaluate();
     if (evaluated_score != Score(distance_and_routes_.rbegin()->first, distance_sum_ * 2)) {
@@ -97,6 +123,7 @@ class FastEvaluationGraph : public Graph {
     }
     return Score(distance_and_routes_.rbegin()->first, distance_sum_ * 2);
   }
+  //*/
 
  private:
   static inline Route RegularizedRoute(const Route& route) {
