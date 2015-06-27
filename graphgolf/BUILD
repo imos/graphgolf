@@ -11,6 +11,16 @@ cc_library(
   linkstatic = 1,
 )
 
+cc_test(
+  name = "fast_evaluation_graph_test",
+  srcs = ["fast_evaluation_graph_test.cc"],
+  deps = [
+    ":fast_evaluation_graph",
+    ":graph",
+    "//base:test_main",
+  ],
+)
+
 cc_binary(
   name = "generate_base",
   srcs = ["generate_base_main.cc"],
